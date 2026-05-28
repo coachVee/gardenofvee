@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garden of Vee | Breathe · Belong · Become</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        :root {
+            --clay: #D16B3D;
+            --clay-light: #e88a5e;
+            --clay-dark: #a84d28;
+            --sage: #717254;
+            --sage-light: #8f906e;
+            --sage-dark: #55563b;
+            --warm-bg: #fcfbf9;
+            --deep: #1a1a1a;
+            --golden: #c9975b;
+            --cream: #faf7f2;
+            --olive: #5a5e3d;
+            --terracotta: #b85c3a;
+        }
+
+        * { -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--warm-bg);
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        .font-display { font-family: 'Playfair Display', Georgia, serif; }
+
+        ::selection {
+            background-color: rgba(209, 107, 61, 0.25);
+            color: var(--clay-dark);
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+        .glass-dark {
+            background: rgba(26, 26, 26, 0.55);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* ── FILM GRAIN ─────────────────────────────────────── */
+        .grain-overlay {
+            position: absolute;
+            inset: -120px;
+            width: calc(100% + 240px);
+            height: calc(100% + 240px);
+            pointer-events: none;
+            z-index: 3;
+            opacity: 0.055;
+            animation: grain-shift 0.4s steps(1) infinite;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-size: 180px;
+        }
+        @keyframes grain-shift {
+            0%   { transform: translate(0, 0); }
+            10%  { transform: translate(-2%, -3%); }
+            20%  { transform: translate(-5%, 2%); }
+            30%  { transform: translate(3%, -4%); }
+            40%  { transform: translate(-4%, 5%); }
+            50%  { transform: translate(-2%, 6%); }
+            60%  { transform: translate(4%, 0%); }
+            70%  { transform: translate(0%, 4%); }
+            80%  { transform: translate(-3%, 2%); }
+            90%  { transform: translate(4%, 3%); }
+            100% { transform: translate(1%, 0); }
+        }
+
+        /* ── MARQUEE ─────────────────────────────────────────── */
+        @keyframes marquee-left {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .marquee-track {
+            animation: marquee-left 30s linear infinite;
+            display: flex;
+            width: max-content;
+        }
+        .marquee-track-slow { animation-duration: 44s; }
+        .marquee-track:hover { animation-play-state: paused; }
+
+        /* ── SPOTLIGHT CARD ──────────────────────────────────── */
+        .spotlight-card { --card-x: 50%; --card-y: 50%; }
+        .spotlight-card::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(circle 300px at var(--card-x) var(--card-y), rgba(255, 200, 140, 0.13), transparent 70%);
+            z-index: 2; pointer-events: none;
+            opacity: 0; transition: opacity 0.35s ease;
+            border-radius: inherit;
+        }
+        .spotlight-card:hover::after { opacity: 1; }
+
+        /* ── KEYFRAMES ───────────────────────────────────────── */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(1deg); }
+            50% { transform: translateY(-8px) rotate(-1deg); }
+            75% { transform: translateY(-28px) rotate(0.5deg); }
+        }
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0px) translateX(0px); }
+            33% { transform: translateY(-30px) translateX(15px); }
+            66% { transform: translateY(-10px) translateX(-10px); }
+        }
+        @keyframes blob {
+            0%, 100% { border-radius: 60% 40% 30% 70%/60% 30% 70% 40%; }
+            25% { border-radius: 30% 60% 70% 40%/50% 60% 30% 60%; }
+            50% { border-radius: 50% 50% 40% 60%/40% 50% 60% 50%; }
+            75% { border-radius: 40% 60% 50% 50%/60% 40% 50% 60%; }
+        }
+
+        .animate-float { animation: float 8s ease-in-out infinite; }
+        .animate-float-slow { animation: float-slow 12s ease-in-out infinite; }
+        .animate-blob { animation: blob 14s ease-in-out infinite; }
+
+        .card-hover-3d {
+            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.5s ease;
+        }
+        .card-hover-3d:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.25), 0 0 0 1px rgba(209,107,61,0.1);
+        }
+
+        .scroll-progress {
+            position: fixed; top: 0; left: 0; height: 3px;
+            background: linear-gradient(90deg, var(--clay), var(--golden), var(--sage));
+            z-index: 100; transition: width 0.1s linear;
+        }
+
+        .wave-divider { display: block; width: 100%; overflow: hidden; line-height: 0; }
+        .wave-divider svg { display: block; }
+
+        .stat-number { font-family: 'Playfair Display', serif; font-style: italic; }
+
+        @media (max-width: 768px) {
+            .animate-float, .animate-float-slow { animation-duration: 6s; }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useCallback, useRef, useMemo } = React;
+        const { motion, AnimatePresence, useScroll, useTransform, useInView } = Motion;
+
+        // ── UTILITY HOOKS ────────────────────────────────────────────────
+        const useScrollProgress = () => {
+            const [progress, setProgress] = useState(0);
+            useEffect(() => {
+                const h = () => { const t = document.documentElement.scrollHeight - window.innerHeight; setProgress(t > 0 ? window.scrollY / t : 0); };
+                window.addEventListener('scroll', h, { passive: true });
+                return () => window.removeEventListener('scroll', h);
+            }, []);
+            return progress;
+        };
+
+        // ── SCROLL PROGRESS BAR ──────────────────────────────────────────
+        const ScrollProgressBar = () => {
+            const p = useScrollProgress();
+            return <div className="scroll-progress" style={{ width: (p * 100) + '%' }} />;
+        };
+
+        // ── BACKGROUND BLOB ──────────────────────────────────────────────
+        const BackgroundBlob = ({ color, size, position, delay = 0, opacity = 0.15 }) => (
+            <motion.div
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity, scale: 1 }}
+                transition={{ duration: 1.5, delay, ease: 'easeOut' }}
+                className="absolute pointer-events-none animate-blob"
+                style={{ width: size, height: size, background: 'radial-gradient(circle at 40% 50%, ' + color + ', transparent)', ...position, filter: 'blur(80px)' }}
+            />
+        );
+
+        // ── REVEAL SECTION ───────────────────────────────────────────────
+        const RevealSection = ({ children, className = '' }) => {
+            const ref = useRef(null);
+            const inView = useInView(ref, { once: true, margin: '-100px' });
+            return (
+                <motion.div ref={ref} initial={{ opacity: 0, y: 60 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }} className={className}>
+                    {children}
+                </motion.div>
+            );
+        };
+
+        // ── STAGGER CONTAINER ────────────────────────────────────────────
+        const StaggerContainer = ({ children, className = '', delay = 0 }) => {
+            const ref = useRef(null);
+            const inView = useInView(ref, { once: true, margin: '-80px' });
+            return (
+                <motion.div ref={ref} initial="hidden" animate={inView ? 'visible' : 'hidden'}
+                    variants={{ visible: { transition: { staggerChildren: 0.12, delayChildren: delay } }, hidden: {} }}
+                    className={className}
+                >
+                    {React.Children.map(children, child => (
+                        <motion.div variants={{ hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } } }}>
+                            {child}
+                        </motion.div>
+                    ))}
+                </motion.div>
+            );
+        };
+
+        // ── MARQUEE STRIP ────────────────────────────────────────────────
+        const MarqueeStrip = ({ items, variant = 'clay', slow = false }) => {
+            const doubled = [...items, ...items, ...items, ...items];
+            const bg = variant === 'clay' ? '#D16B3D' : variant === 'dark' ? '#1a1a1a' : '#717254';
+            const textOpacity = variant === 'clay' ? '0.85' : '0.3';
+            const dotOpacity = variant === 'clay' ? '0.45' : '0.15';
+            return (
+                <div style={{ background: bg, overflow: 'hidden', padding: '14px 0' }}>
+                    <div className={'marquee-track ' + (slow ? 'marquee-track-slow' : '')} style={{ userSelect: 'none' }}>
+                        {doubled.map((item, i) => (
+                            <span key={i} style={{ display: 'inline-flex', alignItems: 'center', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.35em', fontWeight: 700, color: 'rgba(255,255,255,' + textOpacity + ')' }}>
+                                {item}
+                                <span style={{ margin: '0 24px', color: 'rgba(255,255,255,' + dotOpacity + ')' }}>·</span>
+                            </span>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        // ── FLOATING PARTICLES ───────────────────────────────────────────
+        const FloatingParticles = ({ count = 16, color = '#D16B3D' }) => {
+            const particles = useMemo(() => Array.from({ length: count }, (_, i) => ({
+                id: i,
+                x: Math.random() * 100,
+                y: Math.random() * 100,
+                size: Math.random() * 2.5 + 1,
+                dur: Math.random() * 10 + 7,
+                delay: Math.random() * 6,
+                amp: Math.random() * 40 + 15,
+            })), [count]);
+
+            return (
+                <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+                    {particles.map(p => (
+                        <motion.div key={p.id} style={{
+                            position: 'absolute', left: p.x + '%', top: p.y + '%',
+                            width: p.size, height: p.size, borderRadius: '50%', background: color, opacity: 0.15
+                        }}
+                            animate={{ y: [0, -p.amp, 0], opacity: [0.07, 0.22, 0.07] }}
+                            transition={{ duration: p.dur, delay: p.delay, repeat: Infinity, ease: 'easeInOut' }}
+                        />
+                    ))}
+                </div>
+            );
+        };
+
+        // ── ANIMATED STAT COUNTER ────────────────────────────────────────
+        const StatCounter = ({ target, label, suffix = '' }) => {
+            const ref = useRef(null);
+            const inView = useInView(ref, { once: true });
+            const [count, setCount] = useState(0);
+
+            useEffect(() => {
+                if (!inView) return;
+                let c = 0;
+                const steps = 60;
+                const inc = target / steps;
+                const timer = setInterval(() => {
+                    c += inc;
+                    if (c >= target) { setCount(target); clearInterval(timer); }
+                    else setCount(Math.round(c));
+                }, 1800 / steps);
+                return () => clearInterval(timer);
+            }, [inView, target]);
+
+            return (
+                <div ref={ref} className="text-center group">
+                    <div className="stat-number text-6xl md:text-7xl font-medium mb-3 leading-none" style={{ color: '#D16B3D' }}>
+                        {count}{suffix}
+                    </div>
+                    <div style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.45em', fontWeight: 700, color: 'rgba(255,255,255,0.3)', marginTop: '8px' }}
+                        className="group-hover:text-[#D16B3D]/60 transition-colors duration-300">
+                        {label}
+                    </div>
+                </div>
+            );
+        };
+
+        // ── GLOW BUTTON (magnetic text pull) ────────────────────────────
+        const GlowButton = ({ children, onClick, variant = 'dark', className = '' }) => {
+            const btnRef = useRef(null);
+            const innerRef = useRef(null);
+
+            const onMove = (e) => {
+                if (!btnRef.current || !innerRef.current) return;
+                const r = btnRef.current.getBoundingClientRect();
+                const dx = (e.clientX - (r.left + r.width / 2)) * 0.28;
+                const dy = (e.clientY - (r.top + r.height / 2)) * 0.28;
+                innerRef.current.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+            };
+            const onLeave = () => { if (innerRef.current) innerRef.current.style.transform = 'translate(0,0)'; };
+
+            return (
+                <motion.button ref={btnRef} onClick={onClick} onMouseMove={onMove} onMouseLeave={onLeave}
+                    whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
+                    className={'relative group px-8 py-3 rounded-full font-bold text-[10px] uppercase tracking-[0.3em] overflow-hidden transition-all duration-500 shadow-xl hover:shadow-2xl ' + (variant === 'dark' ? 'bg-black text-white hover:bg-[#D16B3D]' : 'bg-white text-black hover:bg-[#D16B3D] hover:text-white') + ' ' + className}
+                >
+                    <span ref={innerRef} className="relative z-10 inline-block" style={{ transition: 'transform 0.1s ease' }}>{children}</span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#D16B3D] via-[#c9975b] to-[#D16B3D] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                </motion.button>
+            );
+        };
+
+        // ── ENQUIRY CONFIG ───────────────────────────────────────────────
+        const ENQUIRY_CONFIG = {
+            'shared-moments': {
+                label: 'Community',
+                title: 'Reserve Your Spot',
+                subtitle: "Tell us which experience calls to you and we'll be in touch with everything you need.",
+                accent: '#D16B3D',
+                dark: true,
+                fields: [
+                    { id: 'name',      label: 'Full Name',                              type: 'text',     required: true  },
+                    { id: 'email',     label: 'Email Address',                          type: 'email',    required: true  },
+                    { id: 'event',     label: 'Event of Interest',                      type: 'select',   required: true,
+                      options: ['Sip & Paint','Poetry Night','Slow Craft Evening','Outdoor Movie Night','Listening Session','Neo-Soul Evening','Live Music Event','Catered Dining Event','Bonfire Evening','Surprise me'] },
+                    { id: 'groupSize', label: 'Group Size',                             type: 'select',   required: false,
+                      options: ['Just me','2–5 people','6–10 people','10+ people'] },
+                    { id: 'dates',     label: 'Preferred Date or Timeframe',            type: 'text',     required: false, placeholder: 'e.g. Any Saturday in July' },
+                    { id: 'message',   label: 'Anything else we should know?',          type: 'textarea', required: false },
+                ],
+                emailSubject: (f) => `Shared Moments Enquiry — ${f.event || 'General'} | ${f.name}`,
+                emailBody: (f) => `Hello Garden of Vee,\n\nI'd love to be part of one of your Shared Moments experiences.\n\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━\nENQUIRY DETAILS\n━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `Name:             ${f.name}\nEmail:            ${f.email}\nEvent:            ${f.event || '—'}\nGroup Size:       ${f.groupSize || '—'}\nPreferred Dates:  ${f.dates || '—'}\n\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━\nMESSAGE\n━━━━━━━━━━━━━━━━━━━━━━\n${f.message || 'No additional message.'}\n\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━\nSent via gardenofvee.africa`,
+            },
+            'retreats': {
+                label: 'Sanctuary',
+                title: 'Book a Retreat',
+                subtitle: "Share your details and we'll shape a retreat experience around where you are right now.",
+                accent: '#717254',
+                dark: false,
+                fields: [
+                    { id: 'name',         label: 'Full Name',                              type: 'text',     required: true  },
+                    { id: 'email',        label: 'Email Address',                          type: 'email',    required: true  },
+                    { id: 'retreatType',  label: 'Retreat Type',                           type: 'select',   required: true,
+                      options: ['Solo Retreat','Couples Retreat','Youth Camp','Reflection Retreat'] },
+                    { id: 'attendees',    label: 'Number of Attendees',                    type: 'select',   required: false,
+                      options: ['1 person','2 people','3–5 people','6–10 people','10+ people'] },
+                    { id: 'dates',        label: 'Preferred Dates',                        type: 'text',     required: false, placeholder: 'e.g. August 2025, flexible' },
+                    { id: 'requirements', label: 'Special requirements or intentions',     type: 'textarea', required: false },
+                ],
+                emailSubject: (f) => `Retreat Enquiry — ${f.retreatType || 'General'} | ${f.name}`,
+                emailBody: (f) => `Hello Garden of Vee,\n\nI would like to enquire about a retreat.\n\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━\nENQUIRY DETAILS\n━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `Name:            ${f.name}\nEmail:           ${f.email}\nRetreat Type:    ${f.retreatType || '—'}\nAttendees:       ${f.attendees || '—'}\nPreferred Dates: ${f.dates || '—'}\n\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━\nSPECIAL REQUIREMENTS / INTENTIONS\n━━━━━━━━━━━━━━━━━━━━━━\n${f.requirements || 'None specified.'}\n\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━\nSent via gardenofvee.africa`,
+            },
+            'faith': {
+                label: 'Spirituality',
+                title: 'Join a Gathering',
+                subtitle: "We'd love to welcome you. Let us know which gathering resonates and we'll save your place.",
+                accent: '#c9975b',
+                dark: true,
+                fields: [
+                    { id: 'name',         label: 'Full Name',                                    type: 'text',     required: true  },
+                    { id: 'email',        label: 'Email Address',                                type: 'email',    required: true  },
+                    { id: 'gatheringType',label: 'Gathering of Interest',                        type: 'select',   required: true,
+                      options: ['Scripture Reflection','Prayer Evening','Bible Study','Praise & Worship','Youth Ministry Bible Study','Open to anything'] },
+                    { id: 'firstTime',    label: 'Have you attended before?',                    type: 'select',   required: false,
+                      options: ["No, it's my first time","Yes, I've been before","Attended online only"] },
+                    { id: 'message',      label: "Anything you'd like us to know or pray for?",  type: 'textarea', required: false },
+                ],
+                emailSubject: (f) => `Faith Gathering Enquiry — ${f.gatheringType || 'General'} | ${f.name}`,
+                emailBody: (f) => `Hello Garden of Vee,\n\nI'd like to join one of your faith gatherings.\n\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━\nENQUIRY DETAILS\n━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `Name:             ${f.name}\nEmail:            ${f.email}\nGathering:        ${f.gatheringType || '—'}\nAttended before:  ${f.firstTime || '—'}\n\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━\nMESSAGE / PRAYER REQUEST\n━━━━━━━━━━━━━━━━━━━━━━\n${f.message || 'None shared.'}\n\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━\nSent via gardenofvee.africa`,
+            },
+            'team': {
+                label: 'Leadership',
+                title: 'Book a Team Experience',
+                subtitle: "Tell us about your team and we'll design an experience that meets you where you are.",
+                accent: '#D16B3D',
+                dark: false,
+                fields: [
+                    { id: 'name',         label: 'Your Full Name',                                type: 'text',     required: true  },
+                    { id: 'email',        label: 'Email Address',                                 type: 'email',    required: true  },
+                    { id: 'organisation', label: 'Organisation Name',                             type: 'text',     required: true  },
+                    { id: 'teamSize',     label: 'Team Size',                                     type: 'select',   required: true,
+                      options: ['5–10 people','10–20 people','20–50 people','50+ people'] },
+                    { id: 'focusArea',    label: 'Primary Focus Area',                            type: 'select',   required: true,
+                      options: ['Team Alignment','Leadership Development','Team Wellbeing','All of the Above'] },
+                    { id: 'format',       label: 'Preferred Format',                              type: 'select',   required: false,
+                      options: ['Half Day Workshop','Full Day Experience','Multi-Day Retreat','Virtual Session','Flexible / Open to ideas'] },
+                    { id: 'message',      label: "Tell us about your team's current challenges",  type: 'textarea', required: false },
+                ],
+                emailSubject: (f) => `Team & Culture Enquiry — ${f.organisation || f.name} | ${f.focusArea || 'General'}`,
+                emailBody: (f) => `Hello Garden of Vee,\n\nI'd like to enquire about a team experience for our organisation.\n\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━\nCONTACT DETAILS\n━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `Name:          ${f.name}\nEmail:         ${f.email}\nOrganisation:  ${f.organisation || '—'}\n\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━\nTEAM DETAILS\n━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `Team Size:     ${f.teamSize || '—'}\nFocus Area:    ${f.focusArea || '—'}\nFormat:        ${f.format || '—'}\n\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━\nCHALLENGES / CONTEXT\n━━━━━━━━━━━━━━━━━━━━━━\n${f.message || 'None specified.'}\n\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━\nSent via gardenofvee.africa`,
+            },
+            'general': {
+                label: 'Get in Touch',
+                title: 'Start a Conversation',
+                subtitle: "We'd love to hear from you. Send us a message and we'll respond within 24 hours.",
+                accent: '#D16B3D',
+                dark: true,
+                fields: [
+                    { id: 'name',    label: 'Full Name',     type: 'text',     required: true  },
+                    { id: 'email',   label: 'Email Address', type: 'email',    required: true  },
+                    { id: 'subject', label: 'Subject',       type: 'text',     required: true,  placeholder: 'What is this about?' },
+                    { id: 'message', label: 'Your Message',  type: 'textarea', required: true  },
+                ],
+                emailSubject: (f) => `General Enquiry — ${f.subject || 'Hello'} | ${f.name}`,
+                emailBody: (f) => `Hello Garden of Vee,\n\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━\nCONTACT DETAILS\n━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `Name:    ${f.name}\nEmail:   ${f.email}\nSubject: ${f.subject || '—'}\n\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━\nMESSAGE\n━━━━━━━━━━━━━━━━━━━━━━\n${f.message}\n\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━\nSent via gardenofvee.africa`,
+            },
+        };
+
+        // ── ENQUIRY MODAL ────────────────────────────────────────────────
+        const EnquiryModal = ({ type, onClose }) => {
+            const [formData, setFormData] = useState({});
+            const [submitted, setSubmitted] = useState(false);
+            const [errors, setErrors]       = useState({});
+            const cfg = ENQUIRY_CONFIG[type] || ENQUIRY_CONFIG['general'];
+            const dark = cfg.dark;
+
+            const update = (id, val) => setFormData(p => ({ ...p, [id]: val }));
+
+            const handleSubmit = () => {
+                const errs = {};
+                cfg.fields.forEach(f => { if (f.required && !formData[f.id]) errs[f.id] = 'This field is required'; });
+                if (Object.keys(errs).length) { setErrors(errs); return; }
+                const subject = encodeURIComponent(cfg.emailSubject(formData));
+                const body    = encodeURIComponent(cfg.emailBody(formData));
+                window.open(`mailto:Gardenofvee.info@gmail.com?subject=${subject}&body=${body}`);
+                setSubmitted(true);
+            };
+
+            const inputBase = `w-full bg-transparent border-b py-3 text-sm font-light focus:outline-none transition-colors duration-300 ${dark ? 'border-white/15 text-white placeholder-white/25 focus:border-white/50' : 'border-gray-200 text-gray-800 placeholder-gray-300 focus:border-[#D16B3D]'}`;
+            const labelBase = `block text-[10px] uppercase tracking-[0.38em] font-black mb-1 ${dark ? 'text-white/35' : 'text-gray-400'}`;
+
+            return (
+                <motion.div
+                    key="modal-overlay"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="fixed inset-0 z-[200] flex items-end md:items-center justify-center p-0 md:p-6"
+                    style={{ backdropFilter: 'blur(12px)', backgroundColor: 'rgba(0,0,0,0.75)' }}
+                    onClick={e => { if (e.target === e.currentTarget) onClose(); }}
+                >
+                    <motion.div
+                        initial={{ opacity: 0, y: 80 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 80 }}
+                        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                        className={`relative w-full md:max-w-[520px] rounded-t-[3rem] md:rounded-[3rem] shadow-2xl overflow-hidden ${dark ? 'bg-[#0f0f0f]' : 'bg-white'}`}
+                        style={{ maxHeight: '94vh', overflowY: 'auto' }}
+                        onClick={e => e.stopPropagation()}
+                    >
+                        {/* Accent stripe */}
+                        <div className="absolute top-0 inset-x-0 h-px" style={{ background: `linear-gradient(90deg, transparent 0%, ${cfg.accent} 40%, ${cfg.accent} 60%, transparent 100%)` }} />
+
+                        {/* Close */}
+                        <button onClick={onClose}
+                            className={`absolute top-6 right-6 z-10 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${dark ? 'bg-white/6 hover:bg-white/14 text-white/50 hover:text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-400 hover:text-gray-800'}`}>
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+
+                        <div className="px-10 pt-12 pb-12 md:px-14 md:pt-14">
+                            {submitted ? (
+                                <motion.div initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-8">
+                                    <motion.div
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: 1 }}
+                                        transition={{ delay: 0.1, type: 'spring', stiffness: 200 }}
+                                        className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-8"
+                                        style={{ background: `${cfg.accent}18`, border: `1px solid ${cfg.accent}40` }}
+                                    >
+                                        <svg className="w-8 h-8" fill="none" stroke={cfg.accent} strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                                    </motion.div>
+                                    <h3 className={`font-display text-3xl font-medium mb-4 ${dark ? 'text-white' : 'text-gray-800'}`}>Your email is ready</h3>
+                                    <p className={`text-sm font-light leading-relaxed max-w-xs mx-auto mb-8 ${dark ? 'text-gray-400' : 'text-gray-500'}`}>
+                                        Your mail client should have opened with a pre-filled message addressed to Garden of Vee. Simply review and hit send — we'll be in touch soon.
+                                    </p>
+                                    <button onClick={onClose} className="text-[10px] uppercase tracking-[0.35em] font-black transition-opacity hover:opacity-70" style={{ color: cfg.accent }}>Close window</button>
+                                </motion.div>
+                            ) : (
+                                <>
+                                    {/* Header */}
+                                    <div className="mb-10 pr-8">
+                                        <span className="text-[10px] uppercase tracking-[0.42em] font-black mb-3 block" style={{ color: cfg.accent }}>{cfg.label}</span>
+                                        <h2 className={`font-display text-3xl md:text-4xl font-medium tracking-tight mb-3 leading-tight ${dark ? 'text-white' : 'text-gray-800'}`}>{cfg.title}</h2>
+                                        <p className={`text-sm font-light leading-relaxed ${dark ? 'text-gray-500' : 'text-gray-500'}`}>{cfg.subtitle}</p>
+                                    </div>
+
+                                    {/* Fields */}
+                                    <div className="space-y-7">
+                                        {cfg.fields.map(field => (
+                                            <div key={field.id}>
+                                                <label className={labelBase}>
+                                                    {field.label}
+                                                    {field.required && <span style={{ color: cfg.accent }}> *</span>}
+                                                </label>
+                                                {field.type === 'textarea' ? (
+                                                    <textarea rows={4} placeholder={field.placeholder || ''}
+                                                        className={inputBase + ' resize-none'}
+                                                        value={formData[field.id] || ''}
+                                                        onChange={e => { update(field.id, e.target.value); setErrors(p => ({...p, [field.id]: ''})); }}
+                                                    />
+                                                ) : field.type === 'select' ? (
+                                                    <select
+                                                        className={inputBase + ' cursor-pointer'}
+                                                        style={{ appearance: 'none' }}
+                                                        value={formData[field.id] || ''}
+                                                        onChange={e => { update(field.id, e.target.value); setErrors(p => ({...p, [field.id]: ''})); }}
+                                                    >
+                                                        <option value="">Select an option</option>
+                                                        {field.options.map(o => <option key={o} value={o}>{o}</option>)}
+                                                    </select>
+                                                ) : (
+                                                    <input type={field.type} placeholder={field.placeholder || ''}
+                                                        className={inputBase}
+                                                        value={formData[field.id] || ''}
+                                                        onChange={e => { update(field.id, e.target.value); setErrors(p => ({...p, [field.id]: ''})); }}
+                                                    />
+                                                )}
+                                                {errors[field.id] && (
+                                                    <p className="text-[10px] mt-1.5 font-medium" style={{ color: cfg.accent }}>{errors[field.id]}</p>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {/* Submit */}
+                                    <div className="mt-12">
+                                        <motion.button onClick={handleSubmit} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
+                                            className="w-full py-4 rounded-full text-white text-[11px] uppercase tracking-[0.3em] font-black shadow-lg transition-shadow duration-300 hover:shadow-2xl"
+                                            style={{ background: `linear-gradient(130deg, ${cfg.accent}, #c9975b 70%, ${cfg.accent})` }}
+                                        >
+                                            Open in Email Client
+                                        </motion.button>
+                                        <p className={`text-center text-[10px] mt-4 font-light leading-relaxed ${dark ? 'text-gray-600' : 'text-gray-400'}`}>
+                                            Opens your mail app pre-filled to <span className="font-medium">Gardenofvee.info@gmail.com</span>
+                                        </p>
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    </motion.div>
+                </motion.div>
+            );
+        };
+
+        // ── NAVIGATION ───────────────────────────────────────────────────
+        const Nav = ({ currentPage, setCurrentPage }) => {
+            const [isMenuOpen, setIsMenuOpen] = useState(false);
+            const [scrolled, setScrolled] = useState(false);
+            useEffect(() => {
+                const h = () => setScrolled(window.scrollY > 50);
+                window.addEventListener('scroll', h, { passive: true });
+                return () => window.removeEventListener('scroll', h);
+            }, []);
+
+            const links = [
+                { name: 'Home', id: 'home' },
+                { name: 'Shared Moments', id: 'shared-moments' },
+                { name: 'Retreats', id: 'retreats' },
+                { name: 'Faith', id: 'faith' },
+                { name: 'Team', id: 'team' },
+            ];
+            const go = (id) => { setCurrentPage(id); setIsMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+
+            return (
+                <motion.nav initial={{ y: -100 }} animate={{ y: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }}
+                    className={'fixed top-0 w-full z-50 transition-all duration-500 ' + (scrolled ? 'glass shadow-lg' : 'bg-transparent')}>
+                    <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+                        <button onClick={() => go('home')} className="flex items-center space-x-2 group">
+                            <motion.img whileHover={{ scale: 1.05 }} src="https://gardenofvee.africa/_assets/media/e64d177df4a837090c086e43ad81e6f8.png" alt="Logo" className={'h-10 md:h-12 w-auto transition-all duration-500 ' + (scrolled ? '' : 'brightness-0 invert')} />
+                        </button>
+                        <div className="hidden lg:flex items-center space-x-10 text-[11px] uppercase tracking-[0.2em] font-bold">
+                            {links.map(link => (
+                                <button key={link.id} onClick={() => go(link.id)} className={'relative transition-colors duration-300 group ' + (currentPage === link.id ? 'text-[#D16B3D]' : (scrolled ? 'text-gray-500 hover:text-[#D16B3D]' : 'text-white/80 hover:text-[#D16B3D]'))}>
+                                    {link.name}
+                                    <span className={'absolute -bottom-1 left-0 h-0.5 bg-[#D16B3D] transition-all duration-300 ' + (currentPage === link.id ? 'w-full' : 'w-0 group-hover:w-full')} />
+                                </button>
+                            ))}
+                            <GlowButton onClick={() => { setCurrentPage('home'); setTimeout(() => { const el = document.getElementById('contact'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 100); }}>Enquire</GlowButton>
+                        </div>
+                        <button className={'lg:hidden p-2 relative z-50 ' + (scrolled ? 'text-gray-600' : 'text-white')} onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                            <div className="w-6 h-5 relative flex flex-col justify-between">
+                                <span className={'w-full h-0.5 bg-current transition-all duration-300 ' + (isMenuOpen ? 'rotate-45 translate-y-2' : '')} />
+                                <span className={'w-full h-0.5 bg-current transition-all duration-300 ' + (isMenuOpen ? 'opacity-0' : '')} />
+                                <span className={'w-full h-0.5 bg-current transition-all duration-300 ' + (isMenuOpen ? '-rotate-45 -translate-y-2' : '')} />
+                            </div>
+                        </button>
+                    </div>
+                    <AnimatePresence>
+                        {isMenuOpen && (
+                            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.4, ease: 'easeInOut' }} className="lg:hidden glass overflow-hidden">
+                                <div className="flex flex-col p-8 space-y-6 text-center uppercase tracking-widest text-sm font-bold">
+                                    {links.map(link => (
+                                        <button key={link.id} onClick={() => go(link.id)} className={currentPage === link.id ? 'text-[#D16B3D]' : 'text-gray-500'}>{link.name}</button>
+                                    ))}
+                                    <button onClick={() => { setCurrentPage('home'); setIsMenuOpen(false); setTimeout(() => { const el = document.getElementById('contact'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 100); }} className="bg-black text-white px-8 py-4 rounded-full">Enquire</button>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </motion.nav>
+            );
+        };
+
+        // ── FOOTER ───────────────────────────────────────────────────────
+        const Footer = ({ setCurrentPage }) => (
+            <footer className="relative py-32 bg-[#1a1a1a] text-white overflow-hidden">
+                <BackgroundBlob color="#D16B3D" size="500px" position={{ top: '-200px', right: '-150px' }} opacity={0.08} />
+                <BackgroundBlob color="#717254" size="400px" position={{ bottom: '-150px', left: '-100px' }} opacity={0.06} delay={0.5} />
+                <div className="max-w-7xl mx-auto px-6 relative z-10">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-16 text-center md:text-left">
+                        <div className="md:col-span-2">
+                            <motion.img initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} src="https://gardenofvee.africa/_assets/media/e64d177df4a837090c086e43ad81e6f8.png" alt="Logo" className="h-20 w-auto mb-8 mx-auto md:mx-0 brightness-0 invert opacity-80" />
+                            <p className="text-gray-400 text-base font-light leading-relaxed max-w-md mx-auto md:mx-0">Creating spaces for shared presence, creative expression, and spiritual reflection. Breathe, belong, and become with us.</p>
+                        </div>
+                        <div>
+                            <h4 className="text-[11px] uppercase tracking-[0.4em] font-black mb-8 text-[#D16B3D]">Connect</h4>
+                            <ul className="space-y-5 text-[11px] uppercase tracking-[0.2em] font-bold text-gray-400">
+                                <li><a href="mailto:hello@gardenofvee.africa" className="hover:text-[#D16B3D] transition-colors duration-300">Email Us</a></li>
+                                <li><a href="https://instagram.com/gardenofvee" target="_blank" className="hover:text-[#D16B3D] transition-colors duration-300">Instagram</a></li>
+                                <li><a href="https://facebook.com/gardenofvee" target="_blank" className="hover:text-[#D16B3D] transition-colors duration-300">Facebook</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div className="mt-24 pt-12 border-t border-white/10 flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0 text-[11px] text-gray-500 uppercase tracking-[0.3em] font-bold">
+                        <div>© {new Date().getFullYear()} Garden of Vee. All rights reserved.</div>
+                        <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-[#D16B3D] flex items-center space-x-4 group transition-colors duration-300">
+                            <span>Back to Top</span>
+                            <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center group-hover:border-[#D16B3D] group-hover:bg-[#D16B3D] group-hover:text-white transition-all duration-300">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </footer>
+        );
+
+        // ── HOME PAGE ────────────────────────────────────────────────────
+        const HomePage = ({ setCurrentPage }) => {
+            const heroRef = useRef(null);
+            const { scrollY } = useScroll();
+            const heroScale = useTransform(scrollY, [0, 500], [1, 1.08]);
+            const heroOpacity = useTransform(scrollY, [0, 500], [1, 0.3]);
+            const [heroMouse, setHeroMouse] = useState({ x: 50, y: 50 });
+
+            const onHeroMove = useCallback((e) => {
+                const r = e.currentTarget.getBoundingClientRect();
+                setHeroMouse({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 });
+            }, []);
+
+            const tagWords = ['Breathe', '·', 'Belong', '·', 'Become'];
+
+            const onCardMove = (e) => {
+                const r = e.currentTarget.getBoundingClientRect();
+                e.currentTarget.style.setProperty('--card-x', ((e.clientX - r.left) / r.width * 100) + '%');
+                e.currentTarget.style.setProperty('--card-y', ((e.clientY - r.top) / r.height * 100) + '%');
+            };
+
+            const services = [
+                { id: 'shared-moments', title: 'Shared Moment Events', video: './moments.mp4', desc: 'Creative gatherings, social evenings, and community experiences designed to bring people together in joy and authentic presence. From Sip & Paint to bonfire nights, every moment is intentionally crafted.' },
+                { id: 'retreats', title: 'Retreats', video: './retreats.mp4', desc: 'Time carved out to pause, reset, and breathe — solo, as a couple, or with a group of friends. Our retreats offer stillness, guided reflection, and the freedom to simply be.' },
+                { id: 'faith', title: 'Faith and Reflection', img: 'https://gardenofvee.africa/_assets/media/44e1e577ff23f203d5b4d430ab741edf.png', desc: 'Christian-rooted spaces for prayer, Bible study, and quiet reflection. Grounded in scripture and open to all — whether you are a lifelong believer or still finding your way.' },
+                { id: 'team', title: 'Team and Culture', img: 'https://gardenofvee.africa/_assets/media/593e96822a2ae8545d2ecfcce8bac7eb.png', desc: 'Intentionally facilitated experiences for organisations seeking alignment, leadership growth, and genuine team wellbeing. We help build cultures that thrive from the inside out.' }
+            ];
+
+            return (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+
+                    {/* HERO */}
+                    <section ref={heroRef} onMouseMove={onHeroMove} className="relative h-screen w-full overflow-hidden bg-black flex items-center justify-center">
+                        <motion.video style={{ scale: heroScale }} className="absolute inset-0 h-full w-full object-cover opacity-60" autoPlay muted loop playsInline src="https://gardenofvee.africa/_assets/video/a7622746c5c90fc291f10343794ab1f1.mp4" />
+                        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/70" />
+
+                        {/* Film grain */}
+                        <div className="grain-overlay" />
+
+                        {/* Cursor-following warm light */}
+                        <div className="absolute inset-0 pointer-events-none" style={{
+                            zIndex: 2,
+                            background: 'radial-gradient(circle 600px at ' + heroMouse.x + '% ' + heroMouse.y + '%, rgba(209,107,61,0.09), transparent)',
+                            transition: 'background 0.5s ease'
+                        }} />
+
+                        {/* Floating orbs */}
+                        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                            <div className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-[#D16B3D]/10 blur-3xl animate-float-slow" />
+                            <div className="absolute bottom-1/3 right-1/4 w-80 h-80 rounded-full bg-[#717254]/10 blur-3xl animate-float" style={{ animationDelay: '-4s' }} />
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-[#c9975b]/5 blur-3xl animate-float" style={{ animationDelay: '-8s' }} />
+                        </div>
+
+                        <motion.div style={{ opacity: heroOpacity }} className="relative flex flex-col items-center text-center px-6" style={{ zIndex: 10 }}>
+                            <motion.img
+                                initial={{ opacity: 0, scale: 0.85, y: 30 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+                                src="https://gardenofvee.africa/_assets/media/e64d177df4a837090c086e43ad81e6f8.png"
+                                className="w-56 md:w-72 mb-8 drop-shadow-2xl"
+                            />
+
+                            {/* Word-by-word blur-in tagline */}
+                            <h1 className="text-white text-sm md:text-xl lg:text-2xl font-light tracking-[0.35em] mb-10 uppercase flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+                                {tagWords.map((word, i) => (
+                                    <motion.span key={i}
+                                        initial={{ opacity: 0, y: 18, filter: 'blur(10px)' }}
+                                        animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                                        transition={{ delay: 0.7 + i * 0.18, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+                                        style={{ color: word === '·' ? '#D16B3D' : undefined }}
+                                    >
+                                        {word}
+                                    </motion.span>
+                                ))}
+                            </h1>
+
+                            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.7, duration: 0.8 }} className="flex flex-col items-center space-y-8">
+                                <a href="#experiences" className="group relative px-8 py-4 overflow-hidden rounded-full border border-white/30 text-white text-[10px] uppercase tracking-[0.3em] font-bold transition-all duration-500 hover:border-[#D16B3D] shadow-2xl">
+                                    <span className="relative z-10">Explore our experiences</span>
+                                    <div className="absolute inset-0 bg-gradient-to-r from-[#D16B3D] to-[#c9975b] translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
+                                </a>
+                                <button onClick={() => { const el = document.getElementById('gatherings-section'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }} className="text-white/60 hover:text-white text-[10px] uppercase tracking-[0.3em] font-bold transition-all flex flex-col items-center group">
+                                    <span className="mb-3">Upcoming Gatherings</span>
+                                    <div className="w-12 h-px bg-white/20 group-hover:w-24 group-hover:bg-[#D16B3D] transition-all duration-700" />
+                                </button>
+                            </motion.div>
+                        </motion.div>
+
+                    </section>
+
+
+                    {/* PILLARS SECTION */}
+                    <section className="relative py-32 px-6 bg-[#fcfbf9] overflow-hidden border-b border-gray-100">
+                        <div className="max-w-6xl mx-auto">
+
+                            {/* Intro row */}
+                            <RevealSection className="flex flex-col md:flex-row items-start md:items-center gap-10 mb-24 pb-20 border-b border-gray-200">
+                                <div className="flex-shrink-0">
+                                    <div className="w-20 h-20 rounded-full border-2 border-[#717254]/30 flex items-center justify-center">
+                                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M20 8 C20 8, 12 14, 12 22 C12 28, 16 32, 20 32 C24 32, 28 28, 28 22 C28 14, 20 8, 20 8Z" stroke="#717254" strokeWidth="1.4" fill="none"/>
+                                            <path d="M20 32 L20 36" stroke="#717254" strokeWidth="1.4" strokeLinecap="round"/>
+                                            <path d="M14 20 C14 20, 8 18, 7 14" stroke="#717254" strokeWidth="1.2" strokeLinecap="round" fill="none"/>
+                                            <path d="M26 20 C26 20, 32 18, 33 14" stroke="#717254" strokeWidth="1.2" strokeLinecap="round" fill="none"/>
+                                            <circle cx="20" cy="20" r="18" stroke="#717254" strokeWidth="1.2" fill="none" opacity="0.25"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p className="font-display text-2xl md:text-3xl lg:text-4xl text-gray-700 font-medium leading-snug tracking-tight">
+                                        Whether you come solo, with others,<br className="hidden md:block" /> or with your organisation —
+                                    </p>
+                                    <p className="font-display text-2xl md:text-3xl lg:text-4xl text-[#717254] font-medium leading-snug tracking-tight mt-2 italic">
+                                        we host experiences that meet you there.
+                                    </p>
+                                </div>
+                            </RevealSection>
+
+                            {/* Three pillars */}
+                            <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-0 divide-y md:divide-y-0 md:divide-x divide-gray-200">
+
+                                {/* Pillar 1 — Gather */}
+                                <div className="group px-0 md:pr-14 pb-16 md:pb-0">
+                                    <div className="w-16 h-16 rounded-full border-2 border-[#717254]/30 flex items-center justify-center mb-8 group-hover:border-[#D16B3D]/50 transition-colors duration-500">
+                                        <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <circle cx="10" cy="10" r="3.5" stroke="#717254" strokeWidth="1.3" fill="none"/>
+                                            <circle cx="20" cy="10" r="3.5" stroke="#717254" strokeWidth="1.3" fill="none"/>
+                                            <circle cx="15" cy="20" r="3.5" stroke="#717254" strokeWidth="1.3" fill="none"/>
+                                            <path d="M13 12.5 L12 16.5" stroke="#717254" strokeWidth="1.2" strokeLinecap="round"/>
+                                            <path d="M17 12.5 L18 16.5" stroke="#717254" strokeWidth="1.2" strokeLinecap="round"/>
+                                            <path d="M13.5 10 L16.5 10" stroke="#717254" strokeWidth="1.2" strokeLinecap="round"/>
+                                        </svg>
+                                    </div>
+                                    <div className="w-8 h-0.5 bg-[#D16B3D] mb-6 group-hover:w-14 transition-all duration-500" />
+                                    <h3 className="font-display text-2xl md:text-3xl font-medium text-gray-800 mb-6 leading-tight group-hover:text-[#D16B3D] transition-colors duration-300">The Gather<br />Experience</h3>
+                                    <p className="text-gray-400 font-light leading-relaxed text-sm mb-5">Community is at the heart of everything we do. Our gather experiences are designed to bring people together through creativity, culture, and shared presence — from Sip & Paint evenings to bonfire nights under the stars.</p>
+                                    <p className="text-gray-400 font-light leading-relaxed text-sm">Whether you come for the art, the music, or simply to be around people who care — there is always a seat for you at the table.</p>
+                                </div>
+
+                                {/* Pillar 2 — Retreat */}
+                                <div className="group px-0 md:px-14 pt-16 md:pt-0">
+                                    <div className="w-16 h-16 rounded-full border-2 border-[#717254]/30 flex items-center justify-center mb-8 group-hover:border-[#D16B3D]/50 transition-colors duration-500">
+                                        <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M15 5 C15 5, 9 11, 9 17 C9 21.5, 11.5 24, 15 24 C18.5 24, 21 21.5, 21 17 C21 11, 15 5, 15 5Z" stroke="#717254" strokeWidth="1.3" fill="none"/>
+                                            <path d="M15 24 L15 27" stroke="#717254" strokeWidth="1.3" strokeLinecap="round"/>
+                                            <path d="M10 16 C10 16, 6 15, 5 12" stroke="#717254" strokeWidth="1.1" strokeLinecap="round"/>
+                                            <path d="M20 16 C20 16, 24 15, 25 12" stroke="#717254" strokeWidth="1.1" strokeLinecap="round"/>
+                                            <path d="M12 19 C12 19, 9 21, 9 24" stroke="#717254" strokeWidth="1.1" strokeLinecap="round"/>
+                                            <path d="M18 19 C18 19, 21 21, 21 24" stroke="#717254" strokeWidth="1.1" strokeLinecap="round"/>
+                                        </svg>
+                                    </div>
+                                    <div className="w-8 h-0.5 bg-[#D16B3D] mb-6 group-hover:w-14 transition-all duration-500" />
+                                    <h3 className="font-display text-2xl md:text-3xl font-medium text-gray-800 mb-6 leading-tight group-hover:text-[#D16B3D] transition-colors duration-300">The Retreat<br />Experience</h3>
+                                    <p className="text-gray-400 font-light leading-relaxed text-sm mb-5">Life moves fast. Our retreats create the conditions for genuine rest — solo reflection, couples renewal, youth camps, and guided group experiences set in peaceful surroundings away from the noise.</p>
+                                    <p className="text-gray-400 font-light leading-relaxed text-sm">You are not expected to produce or perform. Just arrive, breathe, and allow the space to do its work.</p>
+                                </div>
+
+                                {/* Pillar 3 — Faith & Wellness */}
+                                <div className="group px-0 md:pl-14 pt-16 md:pt-0">
+                                    <div className="w-16 h-16 rounded-full border-2 border-[#717254]/30 flex items-center justify-center mb-8 group-hover:border-[#D16B3D]/50 transition-colors duration-500">
+                                        <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M15 6 L15 24" stroke="#717254" strokeWidth="1.3" strokeLinecap="round"/>
+                                            <path d="M9 11 L21 11" stroke="#717254" strokeWidth="1.3" strokeLinecap="round"/>
+                                            <path d="M11 8 C11 8, 10 5, 7 5 C7 8, 9 10, 11 8Z" stroke="#717254" strokeWidth="1.1" fill="none"/>
+                                            <path d="M19 8 C19 8, 20 5, 23 5 C23 8, 21 10, 19 8Z" stroke="#717254" strokeWidth="1.1" fill="none"/>
+                                            <circle cx="15" cy="6" r="1.5" fill="#717254" opacity="0.4"/>
+                                        </svg>
+                                    </div>
+                                    <div className="w-8 h-0.5 bg-[#D16B3D] mb-6 group-hover:w-14 transition-all duration-500" />
+                                    <h3 className="font-display text-2xl md:text-3xl font-medium text-gray-800 mb-6 leading-tight group-hover:text-[#D16B3D] transition-colors duration-300">Faith &amp;<br />Wellness</h3>
+                                    <p className="text-gray-400 font-light leading-relaxed text-sm mb-5">Rooted in Christian faith and open to all seekers, our spiritual gatherings weave scripture, prayer, and communal worship into a rhythm of life that nourishes both soul and body.</p>
+                                    <p className="text-gray-400 font-light leading-relaxed text-sm">Wellness here is holistic — encompassing spiritual health, emotional care, and the kind of belonging that comes from a community that truly sees you.</p>
+                                </div>
+
+                            </StaggerContainer>
+                        </div>
+                    </section>
+
+                    {/* EXPERIENCES */}
+                    <section id="experiences" className="relative py-40 px-6 bg-[#fcfbf9] overflow-hidden">
+                        <BackgroundBlob color="#D16B3D" size="600px" position={{ top: '-100px', left: '-200px' }} opacity={0.06} />
+                        <BackgroundBlob color="#717254" size="500px" position={{ bottom: '-100px', right: '-150px' }} opacity={0.05} delay={0.6} />
+
+                        <RevealSection className="max-w-5xl mx-auto text-center mb-28">
+                            <span className="text-[11px] uppercase tracking-[0.6em] font-black text-[#D16B3D] mb-8 block">Our Offerings</span>
+                            <h2 className="font-display text-5xl md:text-6xl lg:text-7xl font-medium mb-10 text-gray-800 tracking-tight leading-tight">
+                                Ways to Enter{' '}
+                                <span className="text-[#D16B3D] italic">Garden of Vee</span>
+                            </h2>
+                            <p className="text-xl text-gray-400 max-w-2xl mx-auto font-light leading-relaxed">Whether you come solo, with others, or with your organisation, we host experiences that meet you there.</p>
+                        </RevealSection>
+
+                        <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                            {services.map(item => (
+                                <div key={item.id} onMouseMove={onCardMove}
+                                    onClick={() => { setCurrentPage(item.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                                    className="spotlight-card card-hover-3d group relative overflow-hidden rounded-[2.5rem] aspect-[4/3] cursor-pointer"
+                                >
+                                    {item.video ? (
+                                        <video className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110" autoPlay muted loop playsInline src={item.video} />
+                                    ) : (
+                                        <img className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110" src={item.img} alt={item.title} />
+                                    )}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-500" />
+                                    <div className="absolute inset-0 p-8 md:p-10 flex flex-col justify-end text-white" style={{ zIndex: 10 }}>
+                                        <h3 className="text-2xl md:text-3xl lg:text-4xl font-light tracking-wide mb-3">{item.title}</h3>
+                                        <p className="text-gray-300 mb-6 max-w-[85%] text-xs md:text-sm font-light leading-relaxed opacity-0 group-hover:opacity-100 translate-y-6 group-hover:translate-y-0 transition-all duration-500 delay-100">{item.desc}</p>
+                                        <div className="absolute bottom-6 right-6 md:bottom-8 md:right-8 border border-white/30 px-5 py-2.5 rounded-full text-[9px] uppercase tracking-[0.2em] font-bold group-hover:bg-white group-hover:text-black group-hover:border-white transition-all duration-300">Explore</div>
+                                    </div>
+                                </div>
+                            ))}
+                        </StaggerContainer>
+                    </section>
+
+                    {/* SOCIAL SECTION */}
+                    <section className="relative py-32 bg-[#1a1a1a] text-white overflow-hidden">
+                        <FloatingParticles count={18} color="#D16B3D" />
+                        <BackgroundBlob color="#D16B3D" size="500px" position={{ top: '-150px', left: '-100px' }} opacity={0.06} />
+                        <BackgroundBlob color="#717254" size="400px" position={{ bottom: '-120px', right: '-80px' }} opacity={0.05} delay={0.4} />
+                        <div className="max-w-6xl mx-auto px-6 relative z-10">
+                            <RevealSection className="text-center mb-20">
+                                <span className="text-[11px] uppercase tracking-[0.6em] font-black mb-6 block" style={{ color: 'rgba(209,107,61,0.55)' }}>Stay Connected</span>
+                                <h2 className="font-display text-4xl md:text-5xl font-medium tracking-tight italic mb-6">Follow the journey</h2>
+                                <p className="text-gray-500 font-light max-w-xl mx-auto leading-relaxed">Behind-the-scenes moments, upcoming events, and the everyday beauty of community. Join us online.</p>
+                            </RevealSection>
+
+                            <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+
+                                {/* Instagram card */}
+                                <motion.a href="https://instagram.com/gardenofvee" target="_blank"
+                                    whileHover={{ y: -8, scale: 1.02 }}
+                                    transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+                                    className="group relative overflow-hidden rounded-[2.5rem] p-10 border border-white/5 cursor-pointer block"
+                                    style={{ background: 'linear-gradient(135deg, rgba(209,107,61,0.12) 0%, rgba(201,151,91,0.06) 50%, rgba(26,26,26,0.95) 100%)' }}
+                                >
+                                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[2.5rem]"
+                                        style={{ background: 'linear-gradient(135deg, rgba(209,107,61,0.22) 0%, rgba(201,151,91,0.12) 100%)' }} />
+                                    <div className="absolute top-0 right-0 w-40 h-40 rounded-full blur-3xl opacity-10 group-hover:opacity-20 transition-opacity duration-500"
+                                        style={{ background: 'radial-gradient(circle, #D16B3D, transparent)', transform: 'translate(30%, -30%)' }} />
+                                    <div className="relative z-10">
+                                        <div className="flex items-start justify-between mb-10">
+                                            <div className="w-14 h-14 rounded-2xl flex items-center justify-center border border-white/10 group-hover:border-[#D16B3D]/40 transition-colors duration-300"
+                                                style={{ background: 'rgba(255,255,255,0.04)' }}>
+                                                <svg className="w-6 h-6 text-[#D16B3D]" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                                                </svg>
+                                            </div>
+                                            <div className="flex items-center space-x-2 text-[10px] uppercase tracking-[0.3em] font-bold text-white/20 group-hover:text-[#D16B3D]/70 transition-colors duration-300">
+                                                <span>Follow</span>
+                                                <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                                            </div>
+                                        </div>
+                                        <div className="text-[11px] uppercase tracking-[0.4em] font-black text-[#D16B3D]/60 mb-3">Instagram</div>
+                                        <div className="font-display text-3xl md:text-4xl font-medium tracking-tight text-white mb-3">@gardenofvee</div>
+                                        <p className="text-sm text-gray-500 font-light leading-relaxed">Moments, events, and the beauty of everyday community life captured and shared.</p>
+                                    </div>
+                                </motion.a>
+
+                                {/* Facebook card */}
+                                <motion.a href="https://facebook.com/gardenofvee" target="_blank"
+                                    whileHover={{ y: -8, scale: 1.02 }}
+                                    transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+                                    className="group relative overflow-hidden rounded-[2.5rem] p-10 border border-white/5 cursor-pointer block"
+                                    style={{ background: 'linear-gradient(135deg, rgba(113,114,84,0.12) 0%, rgba(90,94,61,0.06) 50%, rgba(26,26,26,0.95) 100%)' }}
+                                >
+                                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[2.5rem]"
+                                        style={{ background: 'linear-gradient(135deg, rgba(113,114,84,0.22) 0%, rgba(90,94,61,0.12) 100%)' }} />
+                                    <div className="absolute top-0 right-0 w-40 h-40 rounded-full blur-3xl opacity-10 group-hover:opacity-20 transition-opacity duration-500"
+                                        style={{ background: 'radial-gradient(circle, #717254, transparent)', transform: 'translate(30%, -30%)' }} />
+                                    <div className="relative z-10">
+                                        <div className="flex items-start justify-between mb-10">
+                                            <div className="w-14 h-14 rounded-2xl flex items-center justify-center border border-white/10 group-hover:border-[#717254]/40 transition-colors duration-300"
+                                                style={{ background: 'rgba(255,255,255,0.04)' }}>
+                                                <svg className="w-6 h-6 text-[#717254]" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
+                                                </svg>
+                                            </div>
+                                            <div className="flex items-center space-x-2 text-[10px] uppercase tracking-[0.3em] font-bold text-white/20 group-hover:text-[#717254]/70 transition-colors duration-300">
+                                                <span>Like Page</span>
+                                                <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                                            </div>
+                                        </div>
+                                        <div className="text-[11px] uppercase tracking-[0.4em] font-black text-[#717254]/60 mb-3">Facebook</div>
+                                        <div className="font-display text-3xl md:text-4xl font-medium tracking-tight text-white mb-3">Garden of Vee</div>
+                                        <p className="text-sm text-gray-500 font-light leading-relaxed">Event announcements, community updates, and spaces to connect with the wider Garden of Vee family.</p>
+                                    </div>
+                                </motion.a>
+
+                            </StaggerContainer>
+                        </div>
+                    </section>
+
+                    {/* Wave divider */}
+                    <div className="wave-divider" style={{ background: '#1a1a1a' }}>
+                        <svg viewBox="0 0 1440 60" preserveAspectRatio="none" style={{ height: '60px', width: '100%', display: 'block' }}>
+                            <path d="M0,60 C360,0 1080,0 1440,60 L1440,60 L0,60 Z" fill="#9f694c" />
+                        </svg>
+                    </div>
+
+                    {/* GATHERINGS */}
+                    <section id="gatherings-section" className="relative py-40 bg-[#9f694c] text-white overflow-hidden">
+                        <FloatingParticles count={14} color="#ffffff" />
+                        <BackgroundBlob color="#ffffff" size="450px" position={{ top: '-100px', right: '-100px' }} opacity={0.04} />
+                        <BackgroundBlob color="#000000" size="350px" position={{ bottom: '-80px', left: '-80px' }} opacity={0.06} delay={0.3} />
+                        <div className="max-w-6xl mx-auto px-6 relative z-10">
+                            <RevealSection className="text-center mb-24">
+                                <span className="text-[11px] uppercase tracking-[0.6em] font-black text-white/40 mb-8 block">Schedule</span>
+                                <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-medium mb-10 tracking-tight">Upcoming Gatherings</h2>
+                                <p className="text-xl text-white/60 max-w-2xl mx-auto font-light">Join us for our scheduled sessions of prayer, scripture, reflection, and community. Every gathering is a space to come as you are.</p>
+                            </RevealSection>
+                            <RevealSection>
+                                <div className="glass-dark rounded-[3.5rem] overflow-hidden border border-white/5 shadow-2xl">
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-left border-collapse">
+                                            <thead>
+                                                <tr className="border-b border-white/5">
+                                                    <th className="py-10 px-10 uppercase tracking-[0.4em] text-[10px] font-black opacity-30">Time</th>
+                                                    <th className="py-10 px-10 uppercase tracking-[0.4em] text-[10px] font-black opacity-30">Session</th>
+                                                    <th className="py-10 px-10 uppercase tracking-[0.4em] text-[10px] font-black opacity-30">Speaker</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-white/5">
+                                                {[
+                                                    { time: '09:00 AM, Saturday', session: 'Youth Ministry Bible Study', detail: 'Scripture exploration for young people — grounded in truth, led with energy and care.', speaker: 'Vee & Team' },
+                                                    { time: '10:00 AM, Sunday', session: 'Morning Reflection & Prayer', detail: 'Begin your Sunday in stillness — a gentle gathering of quiet prayer and communal reflection.', speaker: 'Garden of Vee Team' },
+                                                    { time: '11:00 AM, Sunday', session: 'Worship & Praise Session', detail: 'Spirit-filled music and collective worship to close the week with joy and presence.', speaker: 'Guest Worship Lead' },
+                                                    { time: '06:00 PM, Wednesday', session: 'Mid-week Scripture Study', detail: 'A mid-week anchor — deep, contextual Bible study to carry you through the week.', speaker: 'Community Facilitator' },
+                                                    { time: '07:00 PM, Friday', session: 'Creative Community Evening', detail: 'Rotating monthly experiences — Sip & Paint, poetry nights, bonfire evenings, and more.', speaker: 'Garden of Vee Team' }
+                                                ].map((row, idx) => (
+                                                    <tr key={idx} className="group hover:bg-white/5 transition-colors duration-300">
+                                                        <td className="py-8 px-10 text-sm font-light text-white/50 whitespace-nowrap">{row.time}</td>
+                                                        <td className="py-8 px-10">
+                                                            <div className="text-xl md:text-2xl font-light tracking-wide group-hover:text-[#ffd4b8] transition-colors duration-300 mb-1">{row.session}</div>
+                                                            <div className="text-xs text-white/35 font-light leading-relaxed max-w-sm group-hover:text-white/55 transition-colors duration-300">{row.detail}</div>
+                                                        </td>
+                                                        <td className="py-8 px-10 text-xs font-bold tracking-[0.2em] uppercase text-white/30 group-hover:text-white/70 transition-colors duration-300 whitespace-nowrap">{row.speaker}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </RevealSection>
+                        </div>
+                    </section>
+
+                    {/* Wave divider */}
+                    <div className="wave-divider" style={{ background: '#9f694c' }}>
+                        <svg viewBox="0 0 1440 60" preserveAspectRatio="none" style={{ height: '60px', width: '100%', display: 'block' }}>
+                            <path d="M0,0 C480,60 960,60 1440,0 L1440,60 L0,60 Z" fill="#717254" />
+                        </svg>
+                    </div>
+
+                    {/* CONTACT */}
+                    <section id="contact" className="relative py-40 bg-[#717254] text-[#f4f1ec] overflow-hidden">
+                        <video className="absolute inset-0 h-full w-full object-cover opacity-20" autoPlay muted loop playsInline src="https://gardenofvee.africa/_assets/video/dab63be23f6360217ad23495224889dc.mp4" />
+                        <BackgroundBlob color="#D16B3D" size="400px" position={{ top: '10%', right: '-100px' }} opacity={0.1} />
+                        <div className="max-w-5xl mx-auto px-6 relative z-10 text-center">
+                            <RevealSection>
+                                <h2 className="font-display text-5xl md:text-6xl lg:text-7xl font-medium mb-20 leading-tight tracking-tight">Start your health journey today.<br />Contact us!</h2>
+                            </RevealSection>
+                            <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-16 max-w-2xl mx-auto" delay={0.3}>
+                                <div className="group cursor-pointer">
+                                    <h4 className="text-[11px] uppercase tracking-[0.5em] font-black mb-6 opacity-40 group-hover:opacity-100 transition-opacity">Phone</h4>
+                                    <p className="text-2xl md:text-3xl font-light group-hover:text-white transition-colors">078 514 7472</p>
+                                </div>
+                                <div className="group cursor-pointer">
+                                    <h4 className="text-[11px] uppercase tracking-[0.5em] font-black mb-6 opacity-40 group-hover:opacity-100 transition-opacity">Email</h4>
+                                    <p className="text-xl md:text-2xl font-light group-hover:text-white transition-colors">hello@gardenofvee.africa</p>
+                                </div>
+                            </StaggerContainer>
+                        </div>
+                    </section>
+                </motion.div>
+            );
+        };
+
+        // ── SHARED MOMENTS PAGE ──────────────────────────────────────────
+        const SharedMomentsPage = ({ setCurrentPage }) => (
+            <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="relative py-40 bg-[#1a1a1a] text-white min-h-screen overflow-hidden">
+                <FloatingParticles count={20} color="#D16B3D" />
+                <BackgroundBlob color="#D16B3D" size="500px" position={{ top: '-100px', right: '-150px' }} opacity={0.08} />
+                <BackgroundBlob color="#c9975b" size="350px" position={{ bottom: '-80px', left: '-100px' }} opacity={0.05} delay={0.4} />
+                <div className="max-w-7xl mx-auto px-6 relative z-10">
+                    <RevealSection className="mb-20 text-center lg:text-left">
+                        <span className="text-[11px] uppercase tracking-[0.6em] font-black text-[#D16B3D] mb-6 block">Community</span>
+                        <h2 className="font-display text-6xl md:text-7xl lg:text-8xl font-medium mb-10 tracking-tight">Shared Moments</h2>
+                        <div className="mb-20 rounded-[3.5rem] overflow-hidden aspect-video max-w-6xl mx-auto shadow-2xl border border-white/5">
+                            <video src="https://gardenofvee.africa/_assets/video/aa986aacdd72866ca7059d622c596d0e.mp4" autoPlay muted loop playsInline className="w-full h-full object-cover" />
+                        </div>
+                        <p className="text-2xl text-gray-400 max-w-3xl font-light leading-relaxed">Curated experiences designed to foster connection, creativity, and community in beautiful settings. Every event is an invitation to arrive as you are and leave with something you didn't expect.</p>
+                    </RevealSection>
+                    <StaggerContainer className="grid grid-cols-1 lg:grid-cols-12 gap-20">
+                        <div className="lg:col-span-5 space-y-20">
+                            {[
+                                { title: 'Creative Events', items: [
+                                    { name: 'Sip & Paint', desc: 'An evening of guided creativity exploring self-expression through canvas and colour — no experience needed, just an open heart.' },
+                                    { name: 'Poetry Events', desc: 'Raw, honest spoken word evenings that invite you to listen, feel, and be moved by the power of authentic storytelling.' },
+                                    { name: 'Slow Craft Events', desc: 'Intentional crafting sessions that bring you back to the present moment — weaving, journaling, and making with your hands.' }
+                                ]},
+                                { title: 'Creative Moments', items: [
+                                    { name: 'Outdoor Movie Nights', desc: 'Cosy under the stars with curated film selections, warm food, and even better company.' },
+                                    { name: 'Listening Sessions', desc: 'A sacred space for music — neo-soul, gospel, and ambient sounds played with intention. Conversation optional.' },
+                                    { name: 'Neo-Soul Events', desc: 'Immersive music evenings rooted in soulful sounds, live instruments, and a room full of people who truly feel.' },
+                                    { name: 'Music Live Events', desc: 'Intimate live performances celebrating local and emerging artists in a community setting that honours their craft.' }
+                                ]},
+                                { title: 'Shared Time', items: [
+                                    { name: 'Catered Events', desc: 'Beautifully prepared meals shared around a table together — food as fellowship, nourishment as community.' },
+                                    { name: 'Dining Events', desc: 'Thoughtful dining experiences designed to slow you down, savour what is in front of you, and truly connect.' },
+                                    { name: 'Bonfire Evenings', desc: 'Gather around the fire for open conversation, shared stillness, and the kind of warmth only community can give.' }
+                                ]}
+                            ].map(cat => (
+                                <div key={cat.title}>
+                                    <h4 className="text-[11px] uppercase tracking-[0.4em] font-black text-[#D16B3D] mb-10">{cat.title}</h4>
+                                    <ul className="space-y-8">
+                                        {cat.items.map(item => (
+                                            <li key={item.name} className="group cursor-default">
+                                                <div className="flex items-center mb-2">
+                                                    <div className="w-0 group-hover:w-6 h-px bg-[#D16B3D] mr-0 group-hover:mr-5 transition-all duration-300" />
+                                                    <span className="text-2xl md:text-3xl font-light text-gray-200">{item.name}</span>
+                                                </div>
+                                                <p className="text-sm text-gray-500 font-light leading-relaxed pl-0 group-hover:pl-11 transition-all duration-300 max-w-sm">{item.desc}</p>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="lg:col-span-7 grid grid-cols-2 gap-6">
+                            <video src="https://gardenofvee.africa/_assets/video/ac5ca2d656d5df523d5e3aeded6de94a.mp4" autoPlay muted loop playsInline className="rounded-[2.5rem] aspect-[3/4] object-cover hover:scale-[1.03] transition-transform duration-500 shadow-2xl" />
+                            <video src="https://gardenofvee.africa/_assets/video/3c63f8554287fd6d662033014a35d33a.mp4" autoPlay muted loop playsInline className="rounded-[2.5rem] aspect-square object-cover hover:scale-[1.03] transition-transform duration-500 shadow-2xl" />
+                            <img src="https://gardenofvee.africa/_assets/media/f44d999e6e5fc1972e4b367e11763bd7.png" className="rounded-[2.5rem] aspect-square object-cover hover:scale-[1.03] transition-transform duration-500 shadow-2xl" alt="" />
+                            <img src="https://gardenofvee.africa/_assets/media/6e958bb2cfbd1345d5076b502dd80b4b.png" className="rounded-[2.5rem] aspect-[3/4] object-cover hover:scale-[1.03] transition-transform duration-500 shadow-2xl" alt="" />
+                        </div>
+                    </StaggerContainer>
+                    <div className="mt-24 text-center">
+                        <GlowButton variant="light" onClick={() => { setCurrentPage('gatherings'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>View Upcoming Events</GlowButton>
+                    </div>
+                </div>
+            </motion.section>
+        );
+
+        // ── RETREATS PAGE ────────────────────────────────────────────────
+        const RetreatsPage = ({ setCurrentPage }) => (
+            <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="relative py-40 bg-[#fcfbf9] min-h-screen overflow-hidden">
+                <BackgroundBlob color="#717254" size="500px" position={{ top: '-80px', right: '-120px' }} opacity={0.04} />
+                <div className="max-w-7xl mx-auto px-6 relative z-10">
+                    <RevealSection className="flex flex-col lg:flex-row gap-20 items-center">
+                        <div className="lg:w-1/2 space-y-8">
+                            <div className="relative card-hover-3d rounded-[3rem] overflow-hidden shadow-2xl">
+                                <img src="https://gardenofvee.africa/_assets/media/4abc3f5b4ac5fe71e9c695d09d15d362.jpg" className="w-full" alt="" />
+                            </div>
+                            <div className="rounded-[3rem] overflow-hidden aspect-video shadow-2xl border border-gray-100 ring-8 ring-white">
+                                <video src="https://gardenofvee.africa/_assets/video/d033274d1f037f745909a3394108e67e.mp4" autoPlay muted loop playsInline className="w-full h-full object-cover" />
+                            </div>
+                        </div>
+                        <div className="lg:w-1/2">
+                            <span className="text-[11px] uppercase tracking-[0.6em] font-black text-[#D16B3D] mb-6 block">Sanctuary</span>
+                            <h2 className="font-display text-6xl md:text-7xl font-medium mb-10 text-gray-800 leading-tight tracking-tight">Retreats</h2>
+                            <p className="text-2xl text-gray-500 mb-6 font-light leading-relaxed">Time set aside to slow down and reset — alone or together. Our retreats are held in carefully chosen spaces that invite rest, stillness, and renewal.</p>
+                            <p className="text-lg text-gray-400 mb-14 font-light leading-relaxed">Solo time is always respected. Community is available when you want it. There is no pressure to perform or produce — only space to simply be.</p>
+                            <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                {[
+                                    { title: 'Solo Retreats', desc: 'Carved-out time for personal quietude and deep reflection. No agenda, no performance — just you, stillness, and the space to breathe and be restored.' },
+                                    { title: 'Couples Retreats', desc: 'A retreat for two, designed to nurture connection, restore intimacy, and create shared memories in a peaceful and unhurried environment.' },
+                                    { title: 'Youth Camps', desc: 'Transformative experiences for young people combining adventure, faith, and community. Designed to build confidence, identity, and lasting friendships.' },
+                                    { title: 'Reflection Retreats', desc: 'Structured yet gentle retreats guiding you through inner stillness, journaling, scripture, and prayerful reflection in a supportive group setting.' }
+                                ].map(item => (
+                                    <div key={item.title} className="card-hover-3d group p-8 rounded-[2rem] border border-gray-100 bg-white hover:border-[#D16B3D]/20 transition-all shadow-sm hover:shadow-xl">
+                                        <h4 className="text-lg font-bold mb-3 group-hover:text-[#D16B3D] transition-colors">{item.title}</h4>
+                                        <p className="text-sm text-gray-400 font-light leading-relaxed">{item.desc}</p>
+                                    </div>
+                                ))}
+                            </StaggerContainer>
+                        </div>
+                    </RevealSection>
+                    <div className="mt-24 text-center">
+                        <GlowButton onClick={() => { setCurrentPage('gatherings'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>View Upcoming Events</GlowButton>
+                    </div>
+                </div>
+            </motion.section>
+        );
+
+        // ── FAITH PAGE ───────────────────────────────────────────────────
+        const FaithPage = ({ setCurrentPage }) => (
+            <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="relative py-40 bg-[#1a1a1a] text-white min-h-screen text-center overflow-hidden">
+                <FloatingParticles count={16} color="#c9975b" />
+                <BackgroundBlob color="#c9975b" size="550px" position={{ top: '-120px', left: '-150px' }} opacity={0.06} />
+                <BackgroundBlob color="#D16B3D" size="400px" position={{ bottom: '-100px', right: '-100px' }} opacity={0.05} delay={0.5} />
+                <div className="max-w-6xl mx-auto px-6 relative z-10">
+                    <RevealSection>
+                        <span className="text-[11px] uppercase tracking-[0.6em] font-black text-[#D16B3D] mb-8 block">Spirituality</span>
+                        <h2 className="font-display text-6xl md:text-7xl lg:text-8xl font-medium mb-14 tracking-tight">Faith &amp; Reflection</h2>
+                        <div className="mb-20 rounded-[3.5rem] overflow-hidden aspect-video max-w-5xl mx-auto shadow-2xl border border-white/5">
+                            <img src="https://gardenofvee.africa/_assets/media/be24386fe8c183f693ec6dd6707bace0.png" className="w-full h-full object-cover" alt="" />
+                        </div>
+                        <p className="text-2xl text-gray-400 mb-10 max-w-3xl mx-auto font-light leading-relaxed">Christian-rooted spaces for prayer, Bible-based scripture, and reflection. Participation is always optional, and all are welcome — whether you are a lifelong believer or quietly searching for something more.</p>
+                        <p className="text-lg text-gray-500 mb-20 max-w-2xl mx-auto font-light leading-relaxed">Each gathering is anchored in love, truth, and grace. We believe faith is best cultivated in community — in honest conversation, shared worship, and the stillness of scripture.</p>
+                    </RevealSection>
+                    <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-10 text-left mb-20">
+                        <div className="glass-dark p-14 rounded-[3rem] border border-white/5 hover:border-white/10 transition-colors duration-300">
+                            <h4 className="text-[11px] uppercase tracking-[0.4em] font-black text-[#D16B3D] mb-10">Gatherings</h4>
+                            <ul className="space-y-8">
+                                {[
+                                    { name: 'Scripture Reflection', desc: 'Deep, thoughtful dives into Biblical text — grounded, contextual, and open to honest questions from everyone in the room.' },
+                                    { name: 'Prayer Evenings', desc: 'Quiet, intentional evenings of corporate prayer held in a safe and welcoming space. Come as you are.' },
+                                    { name: 'Bible Study', desc: 'Weekly gatherings focused on understanding scripture in its full context, guided by the Garden of Vee team with care and depth.' },
+                                    { name: 'Praise & Worship Events', desc: 'Joyful, Spirit-filled evenings of music and worship that celebrate our shared faith and the presence of God in community.' }
+                                ].map(item => (
+                                    <li key={item.name} className="list-none">
+                                        <div className="flex items-center mb-2">
+                                            <div className="w-2 h-2 rounded-full bg-[#D16B3D] mr-5 flex-shrink-0" />
+                                            <span className="text-xl font-light text-gray-200">{item.name}</span>
+                                        </div>
+                                        <p className="text-sm text-gray-500 font-light leading-relaxed pl-7">{item.desc}</p>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        <div className="glass-dark p-14 rounded-[3rem] border border-white/5 flex flex-col justify-center">
+                            <h4 className="text-[11px] uppercase tracking-[0.4em] font-black text-[#D16B3D] mb-10">The Faith</h4>
+                            <p className="text-lg md:text-xl font-light text-gray-200 leading-relaxed italic">"Biblically grounded gatherings centred on Christian doctrine with Bible-based scripture. Open to believers and seekers alike."</p>
+                        </div>
+                    </StaggerContainer>
+                    <GlowButton variant="light" onClick={() => { setCurrentPage('gatherings'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>View Upcoming Events</GlowButton>
+                </div>
+            </motion.section>
+        );
+
+        // ── TEAM PAGE ────────────────────────────────────────────────────
+        const TeamPage = ({ setCurrentPage }) => (
+            <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="relative py-40 bg-[#fcfbf9] min-h-screen text-center overflow-hidden">
+                <BackgroundBlob color="#5a5e3d" size="450px" position={{ top: '-80px', right: '-100px' }} opacity={0.04} />
+                <div className="max-w-7xl mx-auto px-6 relative z-10">
+                    <RevealSection>
+                        <span className="text-[11px] uppercase tracking-[0.6em] font-black text-[#D16B3D] mb-6 block">Leadership</span>
+                        <h2 className="font-display text-6xl md:text-7xl font-medium mb-10 text-gray-800 tracking-tight">Team &amp; Culture</h2>
+                        <p className="text-2xl text-gray-500 max-w-3xl mx-auto font-light leading-relaxed mb-10">Facilitated experiences designed to support leadership development and team alignment. We help build cultures where people genuinely thrive.</p>
+                        <p className="text-lg text-gray-400 max-w-2xl mx-auto font-light leading-relaxed mb-24">We believe that great organisations are built by whole people. Our team experiences blend practical tools with intentional community — helping leaders and their teams show up with greater clarity, empathy, and purpose.</p>
+                        <div className="mb-20 max-w-6xl mx-auto">
+                            <div className="group relative overflow-hidden rounded-[3.5rem] aspect-video shadow-2xl border border-gray-100">
+                                <img src="https://gardenofvee.africa/_assets/media/7a26e6a4a3266d5bcfe41e41dcd75e2a.png" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="" />
+                                <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-500" />
+                            </div>
+                        </div>
+                    </RevealSection>
+                    <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-14 max-w-6xl mx-auto">
+                        {[
+                            { title: 'Alignment', desc: 'Interactive sessions that bring your team vision, values, and goals into clear shared focus. When everyone moves in the same direction, momentum becomes unstoppable.' },
+                            { title: 'Leadership', desc: 'Facilitated workshops that develop emotional intelligence, communication, and people-first leadership 2014 equipping your leaders to guide with confidence and care.' },
+                            { title: 'Wellbeing', desc: 'Team wellness sessions that address burnout, restore energy, and foster a culture where every person feels seen, valued, and genuinely supported.' }
+                        ].map(item => (
+                            <div key={item.title} className="card-hover-3d p-10 rounded-[2rem] bg-white border border-gray-50 shadow-sm">
+                                <h4 className="text-[11px] uppercase tracking-[0.5em] font-black text-[#D16B3D] mb-5">{item.title}</h4>
+                                <p className="text-base text-gray-400 font-light leading-relaxed">{item.desc}</p>
+                            </div>
+                        ))}
+                    </StaggerContainer>
+                    <div className="mt-24">
+                        <GlowButton onClick={() => { setCurrentPage('gatherings'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>View Upcoming Events</GlowButton>
+                    </div>
+                </div>
+            </motion.section>
+        );
+
+        // ── GATHERINGS PAGE ──────────────────────────────────────────────
+        const GatheringsPage = () => (
+            <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="relative py-40 bg-[#9f694c] text-white min-h-screen overflow-hidden">
+                <FloatingParticles count={14} color="#ffffff" />
+                <BackgroundBlob color="#ffffff" size="400px" position={{ top: '-80px', right: '-80px' }} opacity={0.04} />
+                <BackgroundBlob color="#000000" size="350px" position={{ bottom: '-60px', left: '-60px' }} opacity={0.05} delay={0.3} />
+                <div className="max-w-6xl mx-auto px-6 relative z-10">
+                    <RevealSection className="text-center mb-24">
+                        <span className="text-[11px] uppercase tracking-[0.6em] font-black text-white/40 mb-6 block">Schedule</span>
+                        <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-medium mb-10 tracking-tight">Upcoming Gatherings</h2>
+                        <p className="text-xl text-white/60 max-w-2xl mx-auto font-light">Join us for our scheduled sessions of prayer, scripture, reflection, and community. Every gathering is a space to come as you are and leave a little more whole.</p>
+                    </RevealSection>
+                    <RevealSection>
+                        <div className="glass-dark rounded-[3.5rem] overflow-hidden border border-white/5 shadow-2xl">
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr className="border-b border-white/5">
+                                            <th className="py-10 px-10 uppercase tracking-[0.4em] text-[10px] font-black opacity-30">Time</th>
+                                            <th className="py-10 px-10 uppercase tracking-[0.4em] text-[10px] font-black opacity-30">Session</th>
+                                            <th className="py-10 px-10 uppercase tracking-[0.4em] text-[10px] font-black opacity-30">Speaker</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-white/5">
+                                        {[
+                                            { time: '09:00 AM, Saturday', session: 'Youth Ministry Bible Study', detail: 'An engaging scripture exploration designed for young people — grounded in truth, led with energy.', speaker: 'Vee & Team' },
+                                            { time: '10:00 AM, Sunday', session: 'Morning Reflection & Prayer', detail: 'Begin your Sunday in stillness. A gentle gathering of quiet prayer, gratitude, and communal reflection.', speaker: 'Garden of Vee Team' },
+                                            { time: '11:00 AM, Sunday', session: 'Worship & Praise Session', detail: 'Spirit-filled music and collective worship to close the week with joy and presence.', speaker: 'Guest Worship Lead' },
+                                            { time: '06:00 PM, Wednesday', session: 'Mid-week Scripture Study', detail: 'A mid-week anchor — deep, contextual Bible study to carry you through the rest of the week.', speaker: 'Community Facilitator' },
+                                            { time: '07:00 PM, Friday', session: 'Creative Community Evening', detail: 'Rotating monthly experiences — Sip & Paint, poetry nights, bonfire evenings, and more.', speaker: 'Garden of Vee Team' },
+                                            { time: '08:00 AM, Saturday', session: 'Wellness Walk & Devotional', detail: 'Start your Saturday with intention — a guided outdoor walk followed by a short shared devotional.', speaker: 'Vee' }
+                                        ].map((row, idx) => (
+                                            <tr key={idx} className="group hover:bg-white/5 transition-colors duration-300">
+                                                <td className="py-8 px-10 text-sm font-light text-white/50 whitespace-nowrap">{row.time}</td>
+                                                <td className="py-8 px-10">
+                                                    <div className="text-xl md:text-2xl font-light tracking-wide group-hover:text-[#ffd4b8] transition-colors duration-300 mb-1">{row.session}</div>
+                                                    <div className="text-xs text-white/35 font-light leading-relaxed max-w-sm group-hover:text-white/55 transition-colors duration-300">{row.detail}</div>
+                                                </td>
+                                                <td className="py-8 px-10 text-xs font-bold tracking-[0.2em] uppercase text-white/30 group-hover:text-white/70 transition-colors duration-300 whitespace-nowrap">{row.speaker}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </RevealSection>
+                </div>
+            </motion.section>
+        );
+
+        // ── APP ──────────────────────────────────────────────────────────
+        const App = () => {
+            const [currentPage, setCurrentPage] = useState('home');
+
+            const renderPage = () => {
+                switch (currentPage) {
+                    case 'shared-moments': return <SharedMomentsPage key="shared-moments" setCurrentPage={setCurrentPage} />;
+                    case 'retreats':       return <RetreatsPage key="retreats" setCurrentPage={setCurrentPage} />;
+                    case 'faith':          return <FaithPage key="faith" setCurrentPage={setCurrentPage} />;
+                    case 'team':           return <TeamPage key="team" setCurrentPage={setCurrentPage} />;
+                    case 'gatherings':     return <GatheringsPage key="gatherings" setCurrentPage={setCurrentPage} />;
+                    default:               return <HomePage key="home" setCurrentPage={setCurrentPage} />;
+                }
+            };
+
+            return (
+                <div className="min-h-screen flex flex-col">
+                    <ScrollProgressBar />
+                    <Nav currentPage={currentPage} setCurrentPage={setCurrentPage} />
+                    <main className="flex-grow pt-20">
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={currentPage}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                transition={{ duration: 0.5, ease: 'easeInOut' }}
+                            >
+                                {renderPage()}
+                            </motion.div>
+                        </AnimatePresence>
+                    </main>
+                    <Footer setCurrentPage={setCurrentPage} />
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
