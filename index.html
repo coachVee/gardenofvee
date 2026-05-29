@@ -709,7 +709,7 @@
                     className={'fixed top-0 w-full z-50 transition-all duration-500 ' + (scrolled ? 'glass shadow-sm' : 'bg-transparent')}>
                     <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                         <button onClick={() => go('home')} className="flex items-center space-x-2 group">
-                            <motion.img whileHover={{ scale: 1.05 }} src="./favi.png" alt="Logo" className={'h-16 md:h-20 w-auto transition-all duration-500 ' + (useLightText ? 'brightness-0 invert' : '')} />
+                            <motion.img whileHover={{ scale: 1.05 }} src="./favi.png" alt="Logo" className={'h-20 md:h-24 w-auto transition-all duration-500 ' + (useLightText ? 'brightness-0 invert' : '')} />
                         </button>
                         <div className="hidden lg:flex items-center space-x-10 text-[11px] uppercase tracking-[0.2em] font-bold">
                             {links.map(link => (
@@ -752,7 +752,7 @@
                 <div className="max-w-7xl mx-auto px-6 relative z-10">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
                         <div className="md:col-span-2">
-                            <motion.img initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} src="./favi.png" alt="Logo" className="h-20 w-auto mb-4 mx-auto md:mx-0" style={{ mixBlendMode: "screen" }} />
+                            <motion.img initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} src="./favi.png" alt="Logo" className="h-28 w-auto mb-4 mx-auto md:mx-0" style={{ mixBlendMode: "screen" }} />
                             <p className="text-gray-400 text-sm font-light leading-relaxed max-w-md mx-auto md:mx-0">Creating spaces for shared presence, creative expression, and spiritual reflection. Breathe, belong, and become with us.</p>
                         </div>
                         <div>
@@ -949,7 +949,7 @@
                                     style={{ aspectRatio: '4/3' }}
                                 >
                                     {item.video ? (
-                                        <video className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110" autoPlay muted loop playsInline src={item.video} />
+                                        <video className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-1000 scale-[1.08] group-hover:scale-125" autoPlay muted loop playsInline src={item.video} />
                                     ) : (
                                         <img className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110" src={item.img} alt={item.title} />
                                     )}
