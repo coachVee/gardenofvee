@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Garden of Vee | Breathe · Belong · Become</title>
+    <link rel="icon" type="image/png" href="favi.png">
+    <link rel="shortcut icon" type="image/png" href="favi.png">
+    <link rel="apple-touch-icon" href="favi.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -203,6 +206,12 @@
         /* ── MODAL SAFE AREAS ────────────────────────────────── */
         .modal-sheet {
             padding-bottom: max(3rem, env(safe-area-inset-bottom));
+        }
+
+        /* ── HERO LOGO IMAGE QUALITY ─────────────────────────── */
+        .hero-logo {
+            mix-blend-mode: screen;
+            transform: translateZ(0);
         }
 
         /* ── HERO FULL HEIGHT ────────────────────────────────── */
@@ -690,23 +699,28 @@
             ];
             const go = (id) => { setCurrentPage(id); setIsMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); };
 
+            const isHome = currentPage === 'home';
+            // White text only on home page before scrolling (dark hero behind nav)
+            // All other states: dark text (glass bg when scrolled, transparent on inner pages)
+            const useLightText = isHome && !scrolled;
+
             return (
                 <motion.nav initial={{ y: -100 }} animate={{ y: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }}
-                    className={'fixed top-0 w-full z-50 transition-all duration-500 ' + (scrolled ? 'glass shadow-lg' : 'bg-transparent')}>
+                    className={'fixed top-0 w-full z-50 transition-all duration-500 ' + (scrolled ? 'glass shadow-sm' : 'bg-transparent')}>
                     <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                         <button onClick={() => go('home')} className="flex items-center space-x-2 group">
-                            <motion.img whileHover={{ scale: 1.05 }} src="https://gardenofvee.africa/_assets/media/e64d177df4a837090c086e43ad81e6f8.png" alt="Logo" className={'h-10 md:h-12 w-auto transition-all duration-500 ' + (scrolled ? '' : 'brightness-0 invert')} />
+                            <motion.img whileHover={{ scale: 1.05 }} src="favi.png" alt="Logo" className={'h-10 md:h-12 w-auto transition-all duration-500 ' + (useLightText ? 'brightness-0 invert' : '')} />
                         </button>
                         <div className="hidden lg:flex items-center space-x-10 text-[11px] uppercase tracking-[0.2em] font-bold">
                             {links.map(link => (
-                                <button key={link.id} onClick={() => go(link.id)} className={'relative transition-colors duration-300 group ' + (currentPage === link.id ? 'text-[#D16B3D]' : (scrolled ? 'text-gray-500 hover:text-[#D16B3D]' : 'text-white/80 hover:text-[#D16B3D]'))}>
+                                <button key={link.id} onClick={() => go(link.id)} className={'relative transition-colors duration-300 group ' + (currentPage === link.id ? 'text-[#D16B3D]' : (useLightText ? 'text-white/80 hover:text-[#D16B3D]' : 'text-gray-700 hover:text-[#D16B3D]'))}>
                                     {link.name}
                                     <span className={'absolute -bottom-1 left-0 h-0.5 bg-[#D16B3D] transition-all duration-300 ' + (currentPage === link.id ? 'w-full' : 'w-0 group-hover:w-full')} />
                                 </button>
                             ))}
                             <GlowButton onClick={() => openModal('general')}>Enquire</GlowButton>
                         </div>
-                        <button className={'lg:hidden p-2 relative z-50 ' + (scrolled ? 'text-gray-600' : 'text-white')} onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                        <button className={'lg:hidden p-2 relative z-50 ' + (useLightText ? 'text-white' : 'text-gray-700')} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                             <div className="w-6 h-5 relative flex flex-col justify-between">
                                 <span className={'w-full h-0.5 bg-current transition-all duration-300 ' + (isMenuOpen ? 'rotate-45 translate-y-2' : '')} />
                                 <span className={'w-full h-0.5 bg-current transition-all duration-300 ' + (isMenuOpen ? 'opacity-0' : '')} />
@@ -732,30 +746,30 @@
 
         // ── FOOTER ───────────────────────────────────────────────────────
         const Footer = ({ setCurrentPage, openModal }) => (
-            <footer className="relative py-32 bg-[#1a1a1a] text-white overflow-hidden">
+            <footer className="relative py-12 bg-[#1a1a1a] text-white overflow-hidden">
                 <BackgroundBlob color="#D16B3D" size="500px" position={{ top: '-200px', right: '-150px' }} opacity={0.08} />
                 <BackgroundBlob color="#717254" size="400px" position={{ bottom: '-150px', left: '-100px' }} opacity={0.06} delay={0.5} />
                 <div className="max-w-7xl mx-auto px-6 relative z-10">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-16 text-center md:text-left">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
                         <div className="md:col-span-2">
-                            <motion.img initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} src="https://gardenofvee.africa/_assets/media/e64d177df4a837090c086e43ad81e6f8.png" alt="Logo" className="h-20 w-auto mb-8 mx-auto md:mx-0 brightness-0 invert opacity-80" />
-                            <p className="text-gray-400 text-base font-light leading-relaxed max-w-md mx-auto md:mx-0">Creating spaces for shared presence, creative expression, and spiritual reflection. Breathe, belong, and become with us.</p>
+                            <motion.img initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} src="favi.png" alt="Logo" className="h-12 w-auto mb-4 mx-auto md:mx-0 brightness-0 invert opacity-80" />
+                            <p className="text-gray-400 text-sm font-light leading-relaxed max-w-md mx-auto md:mx-0">Creating spaces for shared presence, creative expression, and spiritual reflection. Breathe, belong, and become with us.</p>
                         </div>
                         <div>
-                            <h4 className="text-[11px] uppercase tracking-[0.4em] font-black mb-8 text-[#D16B3D]">Connect</h4>
-                            <ul className="space-y-5 text-[11px] uppercase tracking-[0.2em] font-bold text-gray-400">
+                            <h4 className="text-[11px] uppercase tracking-[0.4em] font-black mb-5 text-[#D16B3D]">Connect</h4>
+                            <ul className="space-y-4 text-[11px] uppercase tracking-[0.2em] font-bold text-gray-400">
                                 <li><button onClick={() => openModal('general')} className="hover:text-[#D16B3D] transition-colors duration-300">Email Us</button></li>
                                 <li><a href="https://instagram.com/gardenofvee" target="_blank" className="hover:text-[#D16B3D] transition-colors duration-300">Instagram</a></li>
                                 <li><a href="https://facebook.com/gardenofvee" target="_blank" className="hover:text-[#D16B3D] transition-colors duration-300">Facebook</a></li>
                             </ul>
                         </div>
                     </div>
-                    <div className="mt-24 pt-12 border-t border-white/10 flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0 text-[11px] text-gray-500 uppercase tracking-[0.3em] font-bold">
+                    <div className="mt-8 pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 text-[11px] text-gray-500 uppercase tracking-[0.3em] font-bold">
                         <div>© {new Date().getFullYear()} Garden of Vee. All rights reserved.</div>
                         <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-[#D16B3D] flex items-center space-x-4 group transition-colors duration-300">
                             <span>Back to Top</span>
-                            <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center group-hover:border-[#D16B3D] group-hover:bg-[#D16B3D] group-hover:text-white transition-all duration-300">
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
+                            <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center group-hover:border-[#D16B3D] group-hover:bg-[#D16B3D] group-hover:text-white transition-all duration-300">
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
                             </div>
                         </button>
                     </div>
@@ -818,10 +832,10 @@
                                 initial={{ opacity: 0, scale: 0.85, y: 30 }}
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                 transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-                                src="https://gardenofvee.africa/_assets/media/e64d177df4a837090c086e43ad81e6f8.png"
+                                src="ggh.png"
                                 alt="Garden of Vee"
-                                className="hero-logo mb-8 drop-shadow-2xl"
-                                style={{ width: 'clamp(160px, 45vw, 280px)' }}
+                                className="hero-logo mb-8"
+                                style={{ width: 'clamp(200px, 50vw, 340px)', height: 'auto' }}
                             />
 
                             <h1 className="text-white font-light tracking-[0.35em] mb-10 uppercase flex flex-wrap items-center justify-center gap-x-3 gap-y-1"
@@ -1140,10 +1154,10 @@
                         <div className="mb-20 rounded-[3.5rem] overflow-hidden aspect-video max-w-6xl mx-auto shadow-2xl border border-white/5">
                             <video src="https://gardenofvee.africa/_assets/video/aa986aacdd72866ca7059d622c596d0e.mp4" autoPlay muted loop playsInline className="w-full h-full object-cover" />
                         </div>
-                        <p className="text-2xl text-gray-400 max-w-3xl font-light leading-relaxed">Curated experiences designed to foster connection, creativity, and community in beautiful settings. Every event is an invitation to arrive as you are and leave with something you didn't expect.</p>
+                        <p className="text-2xl text-gray-400 max-w-3xl mx-auto lg:mx-0 font-light leading-relaxed">Curated experiences designed to foster connection, creativity, and community in beautiful settings. Every event is an invitation to arrive as you are and leave with something you didn't expect.</p>
                     </RevealSection>
-                    <StaggerContainer className="grid grid-cols-1 lg:grid-cols-12 gap-20">
-                        <div className="lg:col-span-5 space-y-20">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
+                        <div className="lg:col-span-5 space-y-16">
                             {[
                                 { title: 'Creative Events', items: [
                                     { name: 'Sip & Paint', desc: 'An evening of guided creativity exploring self-expression through canvas and colour — no experience needed, just an open heart.' },
@@ -1163,7 +1177,7 @@
                                 ]}
                             ].map(cat => (
                                 <div key={cat.title}>
-                                    <h4 className="text-[11px] uppercase tracking-[0.4em] font-black text-[#D16B3D] mb-10">{cat.title}</h4>
+                                    <h4 className="text-[11px] uppercase tracking-[0.4em] font-black text-[#D16B3D] mb-8">{cat.title}</h4>
                                     <ul className="space-y-8">
                                         {cat.items.map(item => (
                                             <li key={item.name} className="group cursor-default">
@@ -1171,7 +1185,7 @@
                                                     <div className="w-0 group-hover:w-6 h-px bg-[#D16B3D] mr-0 group-hover:mr-5 transition-all duration-300" />
                                                     <span className="text-2xl md:text-3xl font-light text-gray-200">{item.name}</span>
                                                 </div>
-                                                <p className="text-sm text-gray-500 font-light leading-relaxed pl-0 group-hover:pl-11 transition-all duration-300 max-w-sm">{item.desc}</p>
+                                                <p className="text-sm text-gray-500 font-light leading-relaxed pl-0 group-hover:pl-11 transition-all duration-300">{item.desc}</p>
                                             </li>
                                         ))}
                                     </ul>
@@ -1184,7 +1198,7 @@
                             <img src="https://gardenofvee.africa/_assets/media/f44d999e6e5fc1972e4b367e11763bd7.png" className="rounded-[2.5rem] aspect-square object-cover hover:scale-[1.03] transition-transform duration-500 shadow-2xl" alt="" />
                             <img src="https://gardenofvee.africa/_assets/media/6e958bb2cfbd1345d5076b502dd80b4b.png" className="rounded-[2.5rem] aspect-[3/4] object-cover hover:scale-[1.03] transition-transform duration-500 shadow-2xl" alt="" />
                         </div>
-                    </StaggerContainer>
+                    </div>
                     <div className="mt-24 text-center">
                         <GlowButton variant="light" onClick={() => openModal('shared-moments')}>Reserve a Spot</GlowButton>
                     </div>
@@ -1336,7 +1350,7 @@
                 <div className="min-h-screen flex flex-col">
                     <ScrollProgressBar />
                     <Nav currentPage={currentPage} setCurrentPage={setCurrentPage} openModal={openModal} />
-                    <main className="flex-grow pt-20">
+                    <main className={'flex-grow ' + (currentPage !== 'home' ? 'pt-20' : '')}>
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={currentPage}
