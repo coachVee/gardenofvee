@@ -251,7 +251,7 @@
 
         /* ── SMALL SCREEN TEXT CAPS ──────────────────────────── */
         @media (max-width: 640px) {
-            .hero-logo { width: clamp(160px, 50vw, 220px); }
+            .hero-logo { width: clamp(320px, 85vw, 480px); }
             .page-heading { font-size: clamp(2.5rem, 10vw, 4rem) !important; }
             .page-subheading { font-size: clamp(1rem, 4vw, 1.25rem) !important; }
         }
@@ -709,7 +709,7 @@
                     className={'fixed top-0 w-full z-50 transition-all duration-500 ' + (scrolled ? 'glass shadow-sm' : 'bg-transparent')}>
                     <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                         <button onClick={() => go('home')} className="flex items-center space-x-2 group">
-                            <motion.img whileHover={{ scale: 1.05 }} src="./favi.png" alt="Logo" className={'h-10 md:h-12 w-auto transition-all duration-500 ' + (useLightText ? 'brightness-0 invert' : '')} />
+                            <motion.img whileHover={{ scale: 1.05 }} src="./favi.png" alt="Logo" className={'h-16 md:h-20 w-auto transition-all duration-500 ' + (useLightText ? 'brightness-0 invert' : '')} />
                         </button>
                         <div className="hidden lg:flex items-center space-x-10 text-[11px] uppercase tracking-[0.2em] font-bold">
                             {links.map(link => (
@@ -752,7 +752,7 @@
                 <div className="max-w-7xl mx-auto px-6 relative z-10">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
                         <div className="md:col-span-2">
-                            <motion.img initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} src="./favi.png" alt="Logo" className="h-12 w-auto mb-4 mx-auto md:mx-0 brightness-0 invert opacity-80" />
+                            <motion.img initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} src="./favi.png" alt="Logo" className="h-20 w-auto mb-4 mx-auto md:mx-0 brightness-0 invert opacity-80" />
                             <p className="text-gray-400 text-sm font-light leading-relaxed max-w-md mx-auto md:mx-0">Creating spaces for shared presence, creative expression, and spiritual reflection. Breathe, belong, and become with us.</p>
                         </div>
                         <div>
@@ -835,7 +835,7 @@
                                 src="./ggh.png"
                                 alt="Garden of Vee"
                                 className="hero-logo mb-8"
-                                style={{ width: 'clamp(200px, 50vw, 340px)', height: 'auto' }}
+                                style={{ width: 'clamp(360px, 80vw, 600px)', height: 'auto' }}
                             />
 
                             <h1 className="text-white font-light tracking-[0.35em] mb-10 uppercase flex flex-wrap items-center justify-center gap-x-3 gap-y-1"
